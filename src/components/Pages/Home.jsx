@@ -37,7 +37,7 @@ function Home() {
                 return;
             }
 
-            const response = await fetch(`https://liveapi-booking.liveabuzz.com/hotel/logix/v1/get/city/details/${userId}`, {
+            const response = await fetch(`http://192.168.167.102:5556/hotel/logix/v1/get/city/details/${userId}`, {
                 method: 'GET',
                 headers: {
                     'jwttoken': token,
@@ -60,7 +60,7 @@ function Home() {
             const source = localStorage.getItem('source');
             const Id = localStorage.getItem('id');
 
-            const response = await fetch(`https://liveapi-booking.liveabuzz.com/hotel/logix/v1/get/hotel/details`, {
+            const response = await fetch(`http://192.168.167.102:5556/hotel/logix/v1/get/hotel/details`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -113,7 +113,7 @@ function Home() {
         }
 
         try {
-            const response = await fetch(`https://liveapi-booking.liveabuzz.com/hotel/logix/v1/find/cust/booking/details`, {
+            const response = await fetch(`http://192.168.167.102:5556/hotel/logix/v1/find/cust/booking/details`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

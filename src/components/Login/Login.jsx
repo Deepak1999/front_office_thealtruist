@@ -13,7 +13,7 @@ const Login = () => {
         e.preventDefault();
 
         try {
-            const response = await fetch(`${ApiBaseUrl}/abuzz-admin/account/web/v1/login`, {
+            const response = await fetch(`http://192.168.167.102:5560/abuzz-admin/account/web/v1/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
