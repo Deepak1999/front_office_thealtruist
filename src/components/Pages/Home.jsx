@@ -9,6 +9,7 @@ function Home() {
     const [hotels, setHotels] = useState([]);
     const [selectedCityId, setSelectedCityId] = useState('');
     const hasFetchedCities = useRef(false);
+    const [selectedHotelId, setSelectedHotelId] = useState('');
 
     useEffect(() => {
         $('#dateRange').daterangepicker({
@@ -95,6 +96,60 @@ function Home() {
         }
     };
 
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const dateRange = $('#dateRange').val();
+        const [strDate, endDate] = dateRange.split(' - ');
+
+        const token = localStorage.getItem('token');
+        const adminuserid = localStorage.getItem('id');
+        const source = localStorage.getItem('source');
+
+        if (!strDate || !endDate || !selectedHotelId) {
+            alert('Please select all fields');
+            return;
+        }
+
+        try {
+            const response = await fetch(`https://liveapi-booking.liveabuzz.com/hotel/logix/v1/find/cust/booking/details`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'jwttoken': token,
+                    'adminuserid': adminuserid,
+                    'source': source
+                },
+                body: JSON.stringify({
+                    strDate,
+                    endDate,
+                    locationId: selectedHotelId
+                })
+            });
+
+            if (!response.ok) throw new Error('Failed to fetch booking details');
+
+            const data = await response.json();
+            console.log('Booking Details Response:', data);
+
+            // TODO: Use booking data (show in UI / modal / table etc.)
+        } catch (error) {
+            console.error('Error submitting form:', error);
+        }
+    };
+
+    const handleReset = () => {
+        setSelectedCityId('');
+        setHotels([]);
+        setSelectedHotelId('');
+
+        $('#dateRange').val('');
+
+        $('#dateRange').data('daterangepicker').setStartDate('');
+        $('#dateRange').data('daterangepicker').setEndDate('');
+    };
+
     return (
         <main id="main" className="main">
             <section className="section">
@@ -103,9 +158,8 @@ function Home() {
                         <div className="card">
                             <div className="card-body">
                                 <h6 className="card-title">General Form Elements</h6>
-                                <form>
+                                <form onSubmit={handleSubmit}>
                                     <div className="row mb-3">
-                                        {/* City Dropdown */}
                                         <div className="col-md-4">
                                             <label htmlFor="city" className="form-label">City</label>
                                             <select
@@ -125,7 +179,12 @@ function Home() {
 
                                         <div className="col-md-4">
                                             <label htmlFor="hotel" className="form-label">Hotel Name</label>
-                                            <select id="hotel" className="form-select">
+                                            <select
+                                                id="hotel"
+                                                className="form-select"
+                                                value={selectedHotelId}
+                                                onChange={(e) => setSelectedHotelId(e.target.value)}
+                                            >
                                                 <option value="">Select Hotel</option>
                                                 {hotels.map(hotel => (
                                                     <option key={hotel.id} value={hotel.id}>
@@ -149,7 +208,7 @@ function Home() {
                                     <div className="row">
                                         <div className="col text-center">
                                             <button type="submit" className="btn btn-primary me-3">Submit</button>
-                                            <button type="reset" className="btn btn-secondary">Reset</button>
+                                            <button type="reset" onClick={handleReset} className="btn btn-secondary">Reset</button>
                                         </div>
                                     </div>
 
