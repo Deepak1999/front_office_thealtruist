@@ -175,7 +175,6 @@ function UploadArrivals() {
                                         </tbody>
                                     </table>
 
-                                    {/* Pagination */}
                                     <div className="d-flex justify-content-between align-items-center mt-3">
                                         <button className="btn btn-outline-primary" onClick={() => previousPage()} disabled={!canPreviousPage}>
                                             Previous
@@ -185,6 +184,7 @@ function UploadArrivals() {
                                             Next
                                         </button>
                                     </div>
+
                                 </div>
                             </div>
                         )}

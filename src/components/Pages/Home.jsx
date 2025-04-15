@@ -3,6 +3,7 @@ import 'daterangepicker/daterangepicker.css';
 import $ from 'jquery';
 import 'daterangepicker';
 import ApiBaseUrl from '../Api_base_url/ApiBaseUrl';
+import TableData from '../TableData/TableData';
 
 function Home() {
     const [cities, setCities] = useState([]);
@@ -215,6 +216,7 @@ function Home() {
                                 </form>
                             </div>
                         </div>
+                        <TableData />
                     </div>
                 </div>
             </section>
