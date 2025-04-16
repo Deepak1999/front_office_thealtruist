@@ -1,39 +1,191 @@
-import React from 'react'
+import React, { useState, useMemo } from 'react';
+import { useTable, usePagination } from 'react-table';
 
-function TableData() {
+const CustomReactTable = ({ columns, data, title }) => {
+    const {
+        getTableProps,
+        getTableBodyProps,
+        headerGroups,
+        prepareRow,
+        page,
+        pageOptions,
+        nextPage,
+        previousPage,
+        canNextPage,
+        canPreviousPage,
+        state: { pageIndex },
+    } = useTable(
+        {
+            columns,
+            data,
+            initialState: { pageIndex: 0, pageSize: 5 },
+        },
+        usePagination
+    );
+
     return (
+        <div className="card mt-4">
+            <div className="card-body">
+                <h5 className="card-title">{title}</h5>
+                <table className="table table-striped" {...getTableProps()}>
+                    <thead>
+                        {headerGroups.map(headerGroup => (
+                            <tr {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}>
+                                {headerGroup.headers.map(column => (
+                                    <th {...column.getHeaderProps()} key={column.id}>{column.render('Header')}</th>
+                                ))}
+                            </tr>
+                        ))}
+                    </thead>
+                    <tbody {...getTableBodyProps()}>
+                        {page.map((row, i) => {
+                            prepareRow(row);
+                            return (
+                                <tr {...row.getRowProps()} key={i}>
+                                    {row.cells.map(cell => (
+                                        <td {...cell.getCellProps()} key={cell.column.id}>{cell.render('Cell')}</td>
+                                    ))}
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                </table>
 
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Bordered Tabs</h5>
-
-                <ul class="nav nav-tabs nav-tabs-bordered" id="borderedTab" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#bordered-home" type="button" role="tab" aria-controls="home" aria-selected="true">Uploaded Booking Id's</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#bordered-profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Arrivals Booking Id's</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#bordered-contact" type="button" role="tab" aria-controls="contact" aria-selected="false">No Show Booking Id's</button>
-                    </li>
-                </ul>
-                <div class="tab-content pt-2" id="borderedTabContent">
-                    <div class="tab-pane fade show active" id="bordered-home" role="tabpanel" aria-labelledby="home-tab">
-                        Sunt est soluta temporibus accusantium neque nam maiores cumque temporibus. Tempora libero non est unde veniam est qui dolor. Ut sunt iure rerum quae quisquam autem eveniet perspiciatis odit. Fuga sequi sed ea saepe at unde.
-                    </div>
-                    <div class="tab-pane fade" id="bordered-profile" role="tabpanel" aria-labelledby="profile-tab">
-                        Nesciunt totam et. Consequuntur magnam aliquid eos nulla dolor iure eos quia. Accusantium distinctio omnis et atque fugiat. Itaque doloremque aliquid sint quasi quia distinctio similique. Voluptate nihil recusandae mollitia dolores. Ut laboriosam voluptatum dicta.
-                    </div>
-                    <div class="tab-pane fade" id="bordered-contact" role="tabpanel" aria-labelledby="contact-tab">
-                        Saepe animi et soluta ad odit soluta sunt. Nihil quos omnis animi debitis cumque. Accusantium quibusdam perspiciatis qui qui omnis magnam. Officiis accusamus impedit molestias nostrum veniam. Qui amet ipsum iure. Dignissimos fuga tempore dolor.
-                    </div>
+                <div className="d-flex justify-content-between align-items-center mt-3">
+                    <button className="btn btn-outline-primary" onClick={() => previousPage()} disabled={!canPreviousPage}>
+                        Previous
+                    </button>
+                    <span>Page {pageIndex + 1} of {pageOptions.length}</span>
+                    <button className="btn btn-outline-primary" onClick={() => nextPage()} disabled={!canNextPage}>
+                        Next
+                    </button>
                 </div>
-
             </div>
         </div>
+    );
+};
 
-    )
+function formatDate(dateString) {
+    const date = new Date(dateString);
+
+    const day = String(date.getDate()).padStart(2, '0'); // Pad single digit days with a leading zero
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Month is 0-based, so add 1
+    const year = date.getFullYear();
+
+    return `${day}-${month}-${year}`;
 }
 
-export default TableData
+const TableData = ({ uploadedData = [] }) => {
+    const [activeTab, setActiveTab] = useState('uploaded');
+    const [arrivalsData, setArrivalsData] = useState([]);
+    const [noShowData, setNoShowData] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+
+    const uploadedColumns = useMemo(() => [
+        { Header: 'Sr. No', accessor: (_row, i) => i + 1 },
+        { Header: 'Booking ID', accessor: 'bookingId' },
+        { Header: 'Occupancy Type', accessor: 'occupancyType' },
+        {
+            Header: 'Upload Date',
+            accessor: 'uploadDate',
+            Cell: ({ value }) => {
+                return <span>{formatDate(value)}</span>;
+            }
+        },
+        { Header: 'View Documents', accessor: 'docPathh' },
+        { Header: 'Location Name', accessor: 'locationName' },
+        { Header: 'Documents Type', accessor: 'docType' },
+        {
+            Header: 'Download',
+            Cell: ({ row }) => (
+                <button className="btn btn-sm btn-outline-success">
+                    Download
+                </button>
+            )
+        }
+    ], []);
+
+    const arrivalsColumns = useMemo(() => [
+        { Header: 'Sr. No', accessor: (_row, i) => i + 1 },
+        { Header: 'Booking ID', accessor: 'id' },
+        { Header: 'Check-In Date', accessor: 'checkIn' },
+        { Header: 'Check-Out Date', accessor: 'checkOut' },
+        { Header: 'Guest Name', accessor: 'guest' },
+        { Header: 'Date Time', accessor: 'dateTime' },
+    ], []);
+
+    const noShowColumns = useMemo(() => [
+        { Header: 'User ID', accessor: 'userId' },
+        { Header: 'Booking ID', accessor: 'bookingId' },
+        { Header: 'Upload Date', accessor: 'uploadDate' },
+        { Header: 'Location Name', accessor: 'location' },
+    ], []);
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (error) {
+        return <div>Error: {error}</div>;
+    }
+
+    return (
+        <div className="card">
+            <div className="card-body">
+                <h5 className="card-title">Booking Tables</h5>
+
+                <ul className="nav nav-tabs nav-tabs-bordered mb-3">
+                    <li className="nav-item">
+                        <button
+                            className={`nav-link ${activeTab === 'uploaded' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('uploaded')}
+                        >
+                            Uploaded Booking IDS
+                        </button>
+                    </li>
+                    <li className="nav-item">
+                        <button
+                            className={`nav-link ${activeTab === 'arrivals' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('arrivals')}
+                        >
+                            Arrivals Booking IDS
+                        </button>
+                    </li>
+                    <li className="nav-item">
+                        <button
+                            className={`nav-link ${activeTab === 'noshow' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('noshow')}
+                        >
+                            No Show Booking IDS
+                        </button>
+                    </li>
+                </ul>
+
+                {activeTab === 'uploaded' && Array.isArray(uploadedData) && uploadedData.length > 0 && (
+                    <CustomReactTable columns={uploadedColumns} data={uploadedData} title="Uploaded Booking IDS" />
+                )}
+
+                {activeTab === 'arrivals' && Array.isArray(arrivalsData) && arrivalsData.length > 0 && (
+                    <CustomReactTable columns={arrivalsColumns} data={arrivalsData} title="Arrivals Booking IDS" />
+                )}
+
+                {activeTab === 'noshow' && Array.isArray(noShowData) && noShowData.length > 0 && (
+                    <CustomReactTable columns={noShowColumns} data={noShowData} title="No Show Booking IDS" />
+                )}
+
+                {(activeTab === 'uploaded' && (Array.isArray(uploadedData) ? uploadedData.length === 0 : true)) && (
+                    <div>No uploaded data found.</div>
+                )}
+                {(activeTab === 'arrivals' && (Array.isArray(arrivalsData) ? arrivalsData.length === 0 : true)) && (
+                    <div>No arrivals data found.</div>
+                )}
+                {(activeTab === 'noshow' && (Array.isArray(noShowData) ? noShowData.length === 0 : true)) && (
+                    <div>No no-show data found.</div>
+                )}
+            </div>
+        </div>
+    );
+};
+
+export default TableData;
