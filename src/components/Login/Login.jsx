@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import ApiBaseUrl from '../Api_base_url/ApiBaseUrl';
 import { useNavigate } from 'react-router-dom';
+import { ApiBaseUrl } from '../Api_base_url/ApiBaseUrl';
 
 const Login = () => {
     const [username, setUsername] = useState('');
@@ -13,7 +13,7 @@ const Login = () => {
         e.preventDefault();
 
         try {
-            const response = await fetch(`http://192.168.167.102:5560/abuzz-admin/account/web/v1/login`, {
+            const response = await fetch(`${ApiBaseUrl}/abuzz-admin/account/web/v1/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

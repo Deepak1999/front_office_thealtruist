@@ -183,6 +183,7 @@ const TableData = ({ uploadedData = [] }) => {
                 {(activeTab === 'noshow' && (Array.isArray(noShowData) ? noShowData.length === 0 : true)) && (
                     <div>No no-show data found.</div>
                 )}
+
             </div>
         </div>
     );
