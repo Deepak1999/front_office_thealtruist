@@ -1,14 +1,65 @@
-import React from 'react'
+import React from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { ApiBaseUrl } from '../Api_base_url/ApiBaseUrl';
 
 const Header = () => {
 
-    const Name = "D Kumar"
-    const Fname = "Deepak Kumar"
-    const role = "Admin"
+    const Name = localStorage.getItem('userName');
+    const Fname = localStorage.getItem('userName');
+    const role = localStorage.getItem('name');
+
+    const logout = async () => {
+
+        const Jwttoken = localStorage.getItem('token');
+        const source = localStorage.getItem('source');
+        const userId = localStorage.getItem('id');
+
+        if (!Jwttoken || !source || !userId) {
+            toast.error('Missing necessary data for logout');
+            return;
+        }
+
+        try {
+            const response = await fetch(`${ApiBaseUrl}/abuzz-admin/web/account/v1/logout`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    Jwttoken,
+                    source,
+                    userId,
+                }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                const { statusCode, statusMessage } = data.statusDescription;
+
+                if (statusCode === 200) {
+                    toast.success(statusMessage || 'Logout successful');
+                    localStorage.removeItem('userName');
+                    localStorage.removeItem('name');
+                    localStorage.removeItem('id');
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('source');
+
+                    window.location.href = '/';
+                } else {
+                    toast.error(statusMessage || 'Logout failed');
+                }
+            } else {
+                toast.error('Logout failed with status: ' + response.status);
+            }
+        } catch (error) {
+            toast.error('Error during logout: ' + error.message);
+        }
+    };
 
     return (
         <header id="header" className="header fixed-top d-flex align-items-center">
-
             <div className="d-flex align-items-center justify-content-between">
                 <a className="logo d-flex align-items-center">
                     <img src="assets/img/logo.png" alt="" />
@@ -26,7 +77,6 @@ const Header = () => {
 
             <nav className="header-nav ms-auto">
                 <ul className="d-flex align-items-center">
-
                     <li className="nav-item d-block d-lg-none">
                         <a className="nav-link nav-icon search-bar-toggle ">
                             <i className="bi bi-search"></i>
@@ -34,7 +84,6 @@ const Header = () => {
                     </li>
 
                     <li className="nav-item dropdown pe-3">
-
                         <a className="nav-link nav-profile d-flex align-items-center pe-0" data-bs-toggle="dropdown">
                             <img src="assets/img/profile-img.jpg" alt="Profile" className="rounded-circle" />
                             <span className="d-none d-md-block dropdown-toggle ps-2">{Name}</span>
@@ -60,20 +109,20 @@ const Header = () => {
                             </li>
 
                             <li>
-                                <a className="dropdown-item d-flex align-items-center">
+                                <a className="dropdown-item d-flex align-items-center" onClick={logout}>
                                     <i className="bi bi-box-arrow-right"></i>
                                     <span>Sign Out</span>
                                 </a>
                             </li>
-
                         </ul>
                     </li>
 
                 </ul>
             </nav>
 
+            <ToastContainer />
         </header>
-    )
-}
+    );
+};
 
-export default Header
+export default Header;

@@ -3,6 +3,7 @@ import { useTable, usePagination } from 'react-table';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import '../CustomCss/spinner.css';
+import { ApiBaseUrlNew } from '../Api_base_url/ApiBaseUrl';
 
 function UploadArrivals() {
     const [file, setFile] = useState(null);
@@ -33,7 +34,7 @@ function UploadArrivals() {
 
         try {
             setLoading(true);
-            const response = await fetch('http://192.168.167.102:5556/v3/save/TheAltruist/Guest/Details', {
+            const response = await fetch(`${ApiBaseUrlNew}/v3/save/TheAltruist/Guest/Details`, {
                 method: 'POST',
                 body: formData
             });
