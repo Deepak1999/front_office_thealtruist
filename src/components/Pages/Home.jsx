@@ -4,6 +4,8 @@ import $ from 'jquery';
 import 'daterangepicker';
 import TableData from '../TableData/TableData';
 import { ApiBaseUrlNew } from '../Api_base_url/ApiBaseUrl';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Home() {
     const [cities, setCities] = useState([]);
@@ -114,7 +116,7 @@ function Home() {
         const source = localStorage.getItem('source');
 
         if (!strDate || !endDate || !selectedHotelId) {
-            alert('Please select all fields');
+            toast.info('Please select all the required fields');
             return;
         }
 
@@ -270,6 +272,7 @@ function Home() {
                     </div>
                 </div>
             </section>
+            <ToastContainer />
         </main>
     );
 }
