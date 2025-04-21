@@ -329,6 +329,9 @@ const TableData = ({ uploadedData = [], arrivalsData = [], noShowData = [] }) =>
     if (error) {
         return <div>Error: {error}</div>;
     }
+    const uploadedCount = uploadedData.length;
+    const arrivalsCount = arrivalsData.length;
+    const noShowCount = noShowData.length;
 
     return (
         <div className="card">
@@ -342,6 +345,9 @@ const TableData = ({ uploadedData = [], arrivalsData = [], noShowData = [] }) =>
                             onClick={() => setActiveTab('uploaded')}
                         >
                             Uploaded Booking IDS
+                            <span className="badge bg-primary rounded-circle ms-2" style={{ fontSize: '12px', padding: '10px 12px' }}>
+                                {uploadedCount}
+                            </span>
                         </button>
                     </li>
                     <li className="nav-item">
@@ -350,6 +356,9 @@ const TableData = ({ uploadedData = [], arrivalsData = [], noShowData = [] }) =>
                             onClick={() => setActiveTab('arrivals')}
                         >
                             Arrivals Booking IDS
+                            <span className="badge bg-primary rounded-circle ms-2" style={{ fontSize: '12px', padding: '10px 12px' }}>
+                                {arrivalsCount}
+                            </span>
                         </button>
                     </li>
                     <li className="nav-item">
@@ -358,8 +367,26 @@ const TableData = ({ uploadedData = [], arrivalsData = [], noShowData = [] }) =>
                             onClick={() => setActiveTab('noshow')}
                         >
                             No Show Booking IDS
+                            <span className="badge bg-primary rounded-circle ms-2" style={{ fontSize: '12px', padding: '10px 12px' }}>
+                                {noShowCount}
+                            </span>
                         </button>
                     </li>
+
+                    <div class="filter">
+                        <a class="icon" data-bs-toggle="dropdown"><i class="fa-solid fa-filter"></i></a>
+                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                            {/* <li class="dropdown-header text-start">
+                                <h6>Filter</h6>
+                            </li> */}
+
+                            <li><a class="dropdown-item">Today</a></li>
+                            <li><a class="dropdown-item">Yesterday</a></li>
+                            <li><a class="dropdown-item">Week</a></li>
+                            <li><a class="dropdown-item">Month</a></li>
+                        </ul>
+                    </div>
+
                 </ul>
 
 
