@@ -94,6 +94,18 @@ const TableData = ({ uploadedData = [], arrivalsData = [], noShowData = [] }) =>
             }
         },
         { Header: 'View Documents', accessor: 'docPathh' },
+        // {
+        //     Header: 'View Documents',
+        //     accessor: 'docPathh',
+        //     Cell: ({ row }) => (
+        //         <i
+        //             className="fa-solid fa-eye text-primary"
+        //             style={{ cursor: 'pointer' }}
+        //             title="View Document"
+        //             onClick={() => handleViewClick(row.original)}
+        //         ></i>
+        //     )
+        // },
         // { Header: 'Location Name', accessor: 'locationName' },
         { Header: 'Documents Type', accessor: 'docType' },
         { Header: 'Booking Upload Status', accessor: 'bookingUploadStatus' },

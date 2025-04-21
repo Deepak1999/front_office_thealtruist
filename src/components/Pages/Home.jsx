@@ -103,52 +103,6 @@ function Home() {
         }
     };
 
-    // const handleSubmit = async (e) => {
-    //     e.preventDefault();
-
-    //     const dateRange = $('#dateRange').val();
-    //     const [strDate, endDate] = dateRange.split(' - ');
-
-    //     const token = localStorage.getItem('token');
-    //     const adminuserid = localStorage.getItem('id');
-    //     const source = localStorage.getItem('source');
-
-    //     if (!strDate || !endDate || !selectedHotelId) {
-    //         alert('Please select all fields');
-    //         return;
-    //     }
-
-    //     setStartDate(strDate);
-    //     setEndDate(endDate);
-
-    //     try {
-    //         const response = await fetch(`${ApiBaseUrlNew}/hotel/logix/v1/find/cust/booking/details`, {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //                 'jwttoken': token,
-    //                 'adminuserid': adminuserid,
-    //                 'source': source
-    //             },
-    //             body: JSON.stringify({
-    //                 strDate,
-    //                 endDate,
-    //                 locationId: selectedHotelId
-    //             })
-    //         });
-
-    //         if (!response.ok) throw new Error('Failed to fetch booking details');
-
-    //         const data = await response.json();
-
-    //         setBookingData(data.altruistUserContacts || []);
-    //         console.log('Booking Details Response:', data.altruistUserContacts);
-
-    //     } catch (error) {
-    //         console.error('Error submitting form:', error);
-    //     }
-    // };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -186,7 +140,6 @@ function Home() {
 
             const bookingData = await bookingResponse.json();
             setBookingData(bookingData.altruistUserContacts || []);
-            console.log('Booking Details:', bookingData);
 
             const arrivalsResponse = await fetch(`${ApiBaseUrlNew}/v2/get-all/The/Altruist/Guest/Details`, {
                 method: 'POST',
@@ -205,7 +158,6 @@ function Home() {
 
             const arrivalsData = await arrivalsResponse.json();
             setArrivalsBookingData(arrivalsData.altruistPosExcelDatas || []);
-            console.log('Arrivals Data:', arrivalsData);
 
             const noShowResponse = await fetch(`${ApiBaseUrlNew}/hotel/logix/v2/get-no-show/The/Altruist/Guest/Details`, {
                 method: 'POST',
@@ -224,7 +176,6 @@ function Home() {
 
             const noShowData = await noShowResponse.json();
             setNoShowBookingData(noShowData.altruistPosExcelDatas || []);
-            console.log('No-Show Data:', noShowData);
 
         } catch (error) {
             console.error('Error submitting form:', error);
@@ -309,8 +260,6 @@ function Home() {
                                 </form>
                             </div>
                         </div>
-
-                        {/* <TableData uploadedData={bookingData} /> */}
 
                         <TableData
                             uploadedData={bookingData}
