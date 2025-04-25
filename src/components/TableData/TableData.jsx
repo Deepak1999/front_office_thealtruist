@@ -26,6 +26,20 @@ const CustomReactTable = ({ columns, data, title }) => {
         usePagination
     );
 
+
+    const bookingData = data || [];
+
+    // const totalBookings = new Set(bookingData.map(item => item.resGroupNumber)).size;
+
+    // const totalGuests = bookingData.reduce((sum, item) => {
+    //     const pax = item.pax || "";
+    //     const adultMatch = pax.match(/(\d+)\(A\)/);
+    //     const childMatch = pax.match(/(\d+)\(C\)/);
+    //     const adults = parseInt(adultMatch?.[1] || "0", 10);
+    //     const children = parseInt(childMatch?.[1] || "0", 10);
+    //     return sum + adults + children;
+    // }, 0);
+
     return (
         <div className="card mt-4">
             <div className="card-body">
@@ -62,6 +76,41 @@ const CustomReactTable = ({ columns, data, title }) => {
                     <button className="btn btn-outline-primary" onClick={() => nextPage()} disabled={!canNextPage}>
                         Next
                     </button>
+                </div>
+
+                <div className="mt-3">
+                    <span className="text-muted">
+                        {title === "Uploaded Booking IDS Details" && (
+                            <>
+                                <strong>Total Booking ID:</strong> {new Set(bookingData.map(item => item.bookingId)).size}
+                                &nbsp; | &nbsp;
+                                <strong>Total Guest Count:</strong> {
+                                    bookingData.reduce((sum, item) => sum + parseInt(item.occupancyType || 0, 10), 0)
+                                }
+                                &nbsp; | &nbsp;
+                                <strong>Total Upload Guest Count:</strong> {
+                                    bookingData.reduce((sum, item) => sum + parseInt(item.uploadedGuestCount || 0, 10), 0)
+                                }
+                            </>
+                        )}
+
+                        {title === "Arrivals Booking IDS Details" && (
+                            <>
+                                <strong>Total Booking ID:</strong> {new Set(bookingData.map(item => item.resGroupNumber)).size}
+                                &nbsp; | &nbsp;
+                                <strong>Total Guest Count:</strong> {
+                                    bookingData.reduce((sum, item) => {
+                                        const pax = item.pax || "";
+                                        const adultMatch = pax.match(/(\d+)\(A\)/);
+                                        const childMatch = pax.match(/(\d+)\(C\)/);
+                                        const adults = parseInt(adultMatch?.[1] || "0", 10);
+                                        const children = parseInt(childMatch?.[1] || "0", 10);
+                                        return sum + adults + children;
+                                    }, 0)
+                                }
+                            </>
+                        )}
+                    </span>
                 </div>
             </div>
         </div>
@@ -294,6 +343,14 @@ const TableData = ({ uploadedData = [], arrivalsData = [], noShowData = [] }) =>
         { Header: 'Booking ID', accessor: 'resGroupNumber' },
         { Header: 'Check-In Date', accessor: 'checkInDate' },
         { Header: 'Check-Out Date', accessor: 'checkOutDate' },
+        // { Header: 'Occupancy Type', accessor: 'pax' },
+        {
+            Header: 'Occupancy Type',
+            accessor: row => {
+                const match = row.pax.match(/(\d+)\(A\)/);
+                return match ? match[1] : "0";
+            }
+        },
         { Header: 'Guest Name', accessor: 'guestName' },
         {
             Header: 'Date Time',
@@ -373,19 +430,15 @@ const TableData = ({ uploadedData = [], arrivalsData = [], noShowData = [] }) =>
                         </button>
                     </li>
 
-                    <div class="filter">
+                    {/* <div class="filter">
                         <a class="icon" data-bs-toggle="dropdown"><i class="fa-solid fa-filter"></i></a>
                         <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                            {/* <li class="dropdown-header text-start">
-                                <h6>Filter</h6>
-                            </li> */}
-
                             <li><a class="dropdown-item">Today</a></li>
                             <li><a class="dropdown-item">Yesterday</a></li>
                             <li><a class="dropdown-item">Week</a></li>
                             <li><a class="dropdown-item">Month</a></li>
                         </ul>
-                    </div>
+                    </div> */}
 
                 </ul>
 

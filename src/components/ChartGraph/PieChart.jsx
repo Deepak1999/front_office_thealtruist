@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import * as echarts from 'echarts';
 import BarGraph from './BarGraph';
+import LineChart from './LineChart';
 
 const PieChart = () => {
 
@@ -69,6 +70,13 @@ const PieChart = () => {
                         <div className="card">
                             <div className="card-body">
                                 <BarGraph />
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-lg-6">
+                        <div className="card">
+                            <div className="card-body">
+                                <LineChart />
                             </div>
                         </div>
                     </div>
