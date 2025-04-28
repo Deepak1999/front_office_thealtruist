@@ -73,13 +73,13 @@ const PieChart = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="col-lg-6">
+                    {/* <div className="col-lg-6">
                         <div className="card">
                             <div className="card-body">
                                 <LineChart />
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </section>
         </main>
