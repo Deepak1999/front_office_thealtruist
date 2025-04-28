@@ -26,19 +26,7 @@ const CustomReactTable = ({ columns, data, title }) => {
         usePagination
     );
 
-
     const bookingData = data || [];
-
-    // const totalBookings = new Set(bookingData.map(item => item.resGroupNumber)).size;
-
-    // const totalGuests = bookingData.reduce((sum, item) => {
-    //     const pax = item.pax || "";
-    //     const adultMatch = pax.match(/(\d+)\(A\)/);
-    //     const childMatch = pax.match(/(\d+)\(C\)/);
-    //     const adults = parseInt(adultMatch?.[1] || "0", 10);
-    //     const children = parseInt(childMatch?.[1] || "0", 10);
-    //     return sum + adults + children;
-    // }, 0);
 
     return (
         <div className="card mt-4">
@@ -127,10 +115,8 @@ function formatDate(dateString) {
     return `${day}-${month}-${year}`;
 }
 
-
 const ViewDocumentsModal = ({ bookingId, showModal, handleClose }) => {
     const [documents, setDocuments] = useState([]);
-
 
     const fetchDocuments = async () => {
         try {
@@ -240,7 +226,6 @@ const TableData = ({ uploadedData = [], arrivalsData = [], noShowData = [] }) =>
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
-
     const handleDownloadZip = async (bookingId) => {
         try {
             const token = localStorage.getItem('token');
@@ -292,7 +277,6 @@ const TableData = ({ uploadedData = [], arrivalsData = [], noShowData = [] }) =>
         }
     };
 
-
     const uploadedColumns = useMemo(() => [
         { Header: 'Sr. No', accessor: (_row, i) => i + 1 },
         { Header: 'Booking ID', accessor: 'bookingId' },
@@ -316,14 +300,6 @@ const TableData = ({ uploadedData = [], arrivalsData = [], noShowData = [] }) =>
         },
         { Header: 'Documents Type', accessor: 'docType' },
         { Header: 'Booking Status', accessor: 'bookingUploadStatus' },
-        // {
-        //     Header: 'Download',
-        //     Cell: ({ row }) => (
-        //         <span className="btn btn-sm btn-outline-success">
-        //             <i class="fa-solid fa-circle-down"></i>
-        //         </span>
-        //     )
-        // }
         {
             Header: 'Download',
             Cell: ({ row }) => (
@@ -343,7 +319,6 @@ const TableData = ({ uploadedData = [], arrivalsData = [], noShowData = [] }) =>
         { Header: 'Booking ID', accessor: 'resGroupNumber' },
         { Header: 'Check-In Date', accessor: 'checkInDate' },
         { Header: 'Check-Out Date', accessor: 'checkOutDate' },
-        // { Header: 'Occupancy Type', accessor: 'pax' },
         {
             Header: 'Occupancy Type',
             accessor: row => {
@@ -429,19 +404,7 @@ const TableData = ({ uploadedData = [], arrivalsData = [], noShowData = [] }) =>
                             </span>
                         </button>
                     </li>
-
-                    {/* <div class="filter">
-                        <a class="icon" data-bs-toggle="dropdown"><i class="fa-solid fa-filter"></i></a>
-                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                            <li><a class="dropdown-item">Today</a></li>
-                            <li><a class="dropdown-item">Yesterday</a></li>
-                            <li><a class="dropdown-item">Week</a></li>
-                            <li><a class="dropdown-item">Month</a></li>
-                        </ul>
-                    </div> */}
-
                 </ul>
-
 
                 {activeTab === 'uploaded' && Array.isArray(uploadedData) && uploadedData.length > 0 && (
                     <CustomReactTable columns={uploadedColumns} data={uploadedData} title="Uploaded Booking IDS Details" />
