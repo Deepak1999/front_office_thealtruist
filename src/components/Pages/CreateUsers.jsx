@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useTable, usePagination } from 'react-table';
-import { ApiBaseUrl } from '../Api_base_url/ApiBaseUrl';
+import { ApiBaseUrl, ApiBaseUrlNew } from '../Api_base_url/ApiBaseUrl';
 
 function CreateUsers() {
     const [userData, setUserData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [statusMessage, setStatusMessage] = useState("");
+    const [cities, setCities] = useState([]);
+
     const [formData, setFormData] = useState({
         userName: '',
         password: '',
         employeeName: '',
-        location: ''
+        location: '',
+        roleName: ''
     });
 
     const fetchUsers = async () => {
@@ -58,8 +61,42 @@ function CreateUsers() {
         }
     };
 
+    const fetchCities = async () => {
+        try {
+            const userId = localStorage.getItem('id');
+            const token = localStorage.getItem('token');
+            const source = localStorage.getItem('source');
+
+            if (!userId || !token || !source) {
+                console.error('Missing credentials in localStorage');
+                return;
+            }
+
+            const response = await fetch(`${ApiBaseUrlNew}/hotel/logix/v1/get/city/details/${userId}`, {
+                method: 'GET',
+                headers: {
+                    'jwttoken': token,
+                    'source': source
+                }
+            });
+
+            if (!response.ok) throw new Error('Failed to fetch cities');
+
+            const data = await response.json();
+            setCities(data.locationMaster || []);
+        } catch (error) {
+            console.error('Error fetching cities:', error);
+        }
+    };
+
+    const uniqueCities = cities.filter(
+        (city, index, self) =>
+            index === self.findIndex((c) => c.city === city.city)
+    );
+
     useEffect(() => {
         fetchUsers();
+        fetchCities();
     }, []);
 
     const columns = React.useMemo(() => [
@@ -109,7 +146,8 @@ function CreateUsers() {
             userName: '',
             password: '',
             employeeName: '',
-            location: ''
+            location: '',
+            roleName: ''
         });
     };
 
@@ -124,7 +162,7 @@ function CreateUsers() {
                                 <div className="card-body">
                                     <h5 className="card-title">Create User</h5>
                                     <form className="row g-3" onSubmit={handleSubmit}>
-                                        <div className="col-md-6">
+                                        <div className="col-md-4">
                                             <label htmlFor="userName" className="form-label">User Name</label>
                                             <input
                                                 type="text"
@@ -135,7 +173,7 @@ function CreateUsers() {
                                                 onChange={handleInputChange}
                                             />
                                         </div>
-                                        <div className="col-md-6">
+                                        <div className="col-md-4">
                                             <label htmlFor="password" className="form-label">Password</label>
                                             <input
                                                 type="password"
@@ -146,7 +184,7 @@ function CreateUsers() {
                                                 onChange={handleInputChange}
                                             />
                                         </div>
-                                        <div className="col-md-6">
+                                        <div className="col-md-4">
                                             <label htmlFor="employeeName" className="form-label">Employee Name</label>
                                             <input
                                                 type="text"
@@ -154,6 +192,17 @@ function CreateUsers() {
                                                 id="employeeName"
                                                 name="employeeName"
                                                 value={formData.employeeName}
+                                                onChange={handleInputChange}
+                                            />
+                                        </div>
+                                        <div className="col-md-6">
+                                            <label htmlFor="roleName" className="form-label">Role</label>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                id="roleName"
+                                                name="roleName"
+                                                value={formData.roleName}
                                                 onChange={handleInputChange}
                                             />
                                         </div>
@@ -167,19 +216,19 @@ function CreateUsers() {
                                                 onChange={handleInputChange}
                                             >
                                                 <option value="">Select City</option>
-                                                <option value="New Delhi">New Delhi</option>
-                                                <option value="Chennai">Chennai</option>
-                                                <option value="Bangalore">Bangalore</option>
-                                                <option value="Odisha">Odisha</option>
+                                                {uniqueCities.map((city) => (
+                                                    <option key={city.id} value={city.id}>
+                                                        {city.city}
+                                                    </option>
+                                                ))}
                                             </select>
                                         </div>
-
                                         <div className="col text-center">
                                             <button type="submit" className="btn btn-primary me-3">Submit</button>
                                             <button
                                                 type="reset"
                                                 className="btn btn-secondary"
-                                                onClick={() => setFormData({ userName: '', password: '', employeeName: '', location: '' })}
+                                                onClick={() => setFormData({ userName: '', password: '', employeeName: '', location: '', roleName: '' })}
                                             >
                                                 Reset
                                             </button>

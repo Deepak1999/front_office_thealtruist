@@ -105,6 +105,86 @@ function Home() {
         }
     };
 
+    // const handleSubmit = async (e) => {
+    //     e.preventDefault();
+
+    //     const dateRange = $('#dateRange').val();
+    //     const [strDate, endDate] = dateRange.split(' - ');
+
+    //     const token = localStorage.getItem('token');
+    //     const adminuserid = localStorage.getItem('id');
+    //     const source = localStorage.getItem('source');
+
+    //     if (!strDate || !endDate || !selectedHotelId) {
+    //         toast.info('Please select all the required fields');
+    //         return;
+    //     }
+
+    //     setStartDate(strDate);
+    //     setEndDate(endDate);
+
+    //     try {
+
+    //         const bookingResponse = await fetch(`${ApiBaseUrlNew}/hotel/logix/v1/find/cust/booking/details`, {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 'jwttoken': token,
+    //                 'adminuserid': adminuserid,
+    //                 'source': source
+    //             },
+    //             body: JSON.stringify({
+    //                 strDate,
+    //                 endDate,
+    //                 locationId: selectedHotelId
+    //             })
+    //         });
+
+    //         const bookingData = await bookingResponse.json();
+    //         setBookingData(bookingData.altruistUserContacts || []);
+
+    //         const arrivalsResponse = await fetch(`${ApiBaseUrlNew}/v2/get-all/The/Altruist/Guest/Details`, {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 'jwttoken': token,
+    //                 'adminuserid': adminuserid,
+    //                 'source': source
+    //             },
+    //             body: JSON.stringify({
+    //                 startDate: strDate,
+    //                 endDate,
+    //                 location: selectedHotelId
+    //             })
+    //         });
+
+    //         const arrivalsData = await arrivalsResponse.json();
+    //         setArrivalsBookingData(arrivalsData.altruistPosExcelDatas || []);
+
+    //         const noShowResponse = await fetch(`${ApiBaseUrlNew}/hotel/logix/v2/get-no-show/The/Altruist/Guest/Details`, {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 'jwttoken': token,
+    //                 'adminuserid': adminuserid,
+    //                 'source': source
+    //             },
+    //             body: JSON.stringify({
+    //                 startDate: strDate,
+    //                 endDate,
+    //                 location: selectedHotelId
+    //             })
+    //         });
+
+    //         const noShowData = await noShowResponse.json();
+    //         setNoShowBookingData(noShowData.altruistPosExcelDatas || []);
+
+    //     } catch (error) {
+    //         console.error('Error submitting form:', error);
+    //     }
+    // };
+
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -124,7 +204,6 @@ function Home() {
         setEndDate(endDate);
 
         try {
-
             const bookingResponse = await fetch(`${ApiBaseUrlNew}/hotel/logix/v1/find/cust/booking/details`, {
                 method: 'POST',
                 headers: {
@@ -141,7 +220,14 @@ function Home() {
             });
 
             const bookingData = await bookingResponse.json();
-            setBookingData(bookingData.altruistUserContacts || []);
+            if (bookingData.statusDescription?.statusCode === 200) {
+                setBookingData(bookingData.altruistUserContacts || []);
+                toast.success(bookingData.statusDescription?.statusMessage || 'something went wrong');
+            } else {
+                setBookingData([]);
+                // toast.warning(bookingData.statusDescription?.statusMessage || 'Booking data unavailable');
+                toast.warning('Uploaded Booking data unavailable');
+            }
 
             const arrivalsResponse = await fetch(`${ApiBaseUrlNew}/v2/get-all/The/Altruist/Guest/Details`, {
                 method: 'POST',
@@ -159,7 +245,14 @@ function Home() {
             });
 
             const arrivalsData = await arrivalsResponse.json();
-            setArrivalsBookingData(arrivalsData.altruistPosExcelDatas || []);
+            if (arrivalsData.statusDescription?.statusCode === 200) {
+                setArrivalsBookingData(arrivalsData.altruistPosExcelDatas || []);
+                toast.success(arrivalsData.statusDescription?.statusMessage || 'something went wrong');
+            } else {
+                setArrivalsBookingData([]);
+                // toast.warning(arrivalsData.statusDescription?.statusMessage || 'Arrivals data unavailable');
+                toast.warning('Arrivals data unavailable');
+            }
 
             const noShowResponse = await fetch(`${ApiBaseUrlNew}/hotel/logix/v2/get-no-show/The/Altruist/Guest/Details`, {
                 method: 'POST',
@@ -177,10 +270,18 @@ function Home() {
             });
 
             const noShowData = await noShowResponse.json();
-            setNoShowBookingData(noShowData.altruistPosExcelDatas || []);
+            if (noShowData.statusDescription?.statusCode === 200) {
+                setNoShowBookingData(noShowData.altruistPosExcelDatas || []);
+                toast.success(noShowData.statusDescription?.statusMessage || 'something went wrong');
+            } else {
+                setNoShowBookingData([]);
+                // toast.warning(noShowData.statusDescription?.statusMessage || 'No-show data unavailable');
+                toast.warning('No-show data unavailable');
+            }
 
         } catch (error) {
             console.error('Error submitting form:', error);
+            toast.error('An error occurred while fetching data.');
         }
     };
 
