@@ -34,7 +34,7 @@ function UploadArrivals() {
 
         try {
             setLoading(true);
-            const response = await fetch(`${ApiBaseUrlNew}/v3/save/TheAltruist/Guest/Details`, {
+            const response = await fetch(`${ApiBaseUrlNew}/v4/save/TheAltruist/Guest/Details`, {
                 method: 'POST',
                 body: formData
             });
