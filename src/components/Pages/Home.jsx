@@ -147,7 +147,7 @@ function Home() {
                 toast.warning(bookingData.statusDescription?.statusMessage || 'Booking data unavailable');
             }
 
-            const arrivalsResponse = await fetch(`${ApiBaseUrlNew}/v2/get-all/The/Altruist/Guest/Details`, {
+            const arrivalsResponse = await fetch(`${ApiBaseUrlNew}/v3/get-all/The/Altruist/Guest/Details`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { ApiBaseUrl } from '../Api_base_url/ApiBaseUrl';
@@ -8,6 +8,19 @@ const Header = () => {
     const Name = localStorage.getItem('userName');
     const Fname = localStorage.getItem('userName');
     const role = localStorage.getItem('name');
+    const [sidebarOpen, setSidebarOpen] = useState(true);
+
+    useEffect(() => {
+        if (sidebarOpen) {
+            document.body.classList.remove('toggle-sidebar');
+        } else {
+            document.body.classList.add('toggle-sidebar');
+        }
+    }, [sidebarOpen]);
+
+    const handleSidebarToggle = () => {
+        setSidebarOpen(prev => !prev);
+    };
 
     const logout = async () => {
 
@@ -16,7 +29,7 @@ const Header = () => {
         const userId = localStorage.getItem('id');
 
         if (!Jwttoken || !source || !userId) {
-            toast.error('Missing necessary data for logout');
+            toast.error('Missing necessary data');
             return;
         }
 
@@ -48,31 +61,44 @@ const Header = () => {
 
                     window.location.href = '/';
                 } else {
-                    toast.error(statusMessage || 'Logout failed');
+                    toast.error(statusMessage || 'failed to fetch data');
                 }
             } else {
-                toast.error('Logout failed with status: ' + response.status);
+                toast.error('failed to fetch data with status: ' + response.status);
             }
         } catch (error) {
-            toast.error('Error during logout: ' + error.message);
+            toast.error('Error during fetch data: ' + error.message);
         }
     };
 
     return (
         <header id="header" className="header fixed-top d-flex align-items-center">
-            <div className="d-flex align-items-center justify-content-between">
+            {/* <div className="d-flex align-items-center justify-content-between">
                 <a className="logo d-flex align-items-center">
                     <img src="assets/img/logo.png" alt="" />
                     <span className="d-none d-lg-block">Front Office</span>
                 </a>
                 <i className="bi bi-list toggle-sidebar-btn"></i>
+            </div> */}
+
+            <div className="d-flex align-items-center justify-content-between">
+                <a className="logo d-flex align-items-center">
+                    {/* <img src="assets/img/logo.png" alt="" /> */}
+                    <img src="assets/img/logo.png" alt="" />
+                    <span className="d-none d-lg-block">Front Office</span>
+                </a>
+                <i
+                    className="bi bi-list toggle-sidebar-btn"
+                    onClick={handleSidebarToggle}
+                    style={{ cursor: 'pointer' }}
+                ></i>
             </div>
 
             <div className="search-bar">
-                <form className="search-form d-flex align-items-center">
+                <formm className="search-form d-flex align-items-center">
                     <input type="text" name="query" placeholder="Search" title="Enter search keyword" />
                     <button type="submit" title="Search"><i className="bi bi-search"></i></button>
-                </form>
+                </formm>
             </div>
 
             <nav className="header-nav ms-auto">
@@ -86,7 +112,7 @@ const Header = () => {
                     <li className="nav-item dropdown pe-3">
                         <a className="nav-link nav-profile d-flex align-items-center pe-0" data-bs-toggle="dropdown">
                             <img src="assets/img/profile-img.jpg" alt="Profile" className="rounded-circle" />
-                            <span className="d-none d-md-block dropdown-toggle ps-2">{Name}</span>
+                            <span className="d-none d-md-block dropdown-toggle ps-2" style={{ cursor: 'pointer' }}>{Name}</span>
                         </a>
 
                         <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
@@ -101,7 +127,7 @@ const Header = () => {
                             <li>
                                 <a className="dropdown-item d-flex align-items-center">
                                     <i className="bi bi-person"></i>
-                                    <span>My Profile</span>
+                                    <span style={{ cursor: 'pointer' }}>My Profile</span>
                                 </a>
                             </li>
                             <li>
@@ -111,7 +137,7 @@ const Header = () => {
                             <li>
                                 <a className="dropdown-item d-flex align-items-center" onClick={logout}>
                                     <i className="bi bi-box-arrow-right"></i>
-                                    <span>Sign Out</span>
+                                    <span style={{ cursor: 'pointer' }}>Sign Out</span>
                                 </a>
                             </li>
                         </ul>
@@ -121,7 +147,7 @@ const Header = () => {
             </nav>
 
             <ToastContainer />
-            
+
         </header>
     );
 };

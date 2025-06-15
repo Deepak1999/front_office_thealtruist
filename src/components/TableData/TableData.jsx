@@ -369,7 +369,6 @@ const TableData = ({ uploadedData = [], arrivalsData = [], noShowData = [] }) =>
         <div className="card">
             <div className="card-body">
                 <h5 className="card-title">Booking Tables</h5>
-
                 <ul className="nav nav-tabs nav-tabs-bordered mb-3">
                     <li className="nav-item">
                         <button
@@ -426,7 +425,7 @@ const TableData = ({ uploadedData = [], arrivalsData = [], noShowData = [] }) =>
                     />
                 )}
             </div>
-        </div>
+        </div >
     );
 };
 
